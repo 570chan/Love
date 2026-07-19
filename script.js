@@ -89,7 +89,7 @@ window.addEventListener("resize", () => {
 
 // --- 4. HÀM TẠO TEXTURE & HÌNH ẢNH ---
 
-function loadHeartImage(src = "./heart.png") {
+function loadHeartImage(src = "./src/heart.png") {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.onload = () => resolve(img);
