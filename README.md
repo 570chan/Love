@@ -17,7 +17,7 @@ const texts = ["Yu.meow","Yu.meo","Yu.ely"];
 const youtubeId = "VBO4xoFlNhI";
 </script>
 ```
-  - Now you need to change "const texts" to the name you want in square brackets, and you can add more names if you like.
+   - Now you need to change "const texts" to the name you want in square brackets, and you can add more names if you like.
 
 - **Adjusting the number of characters**: Find the createFallingTexts() function, change the number 350 in the loop line
   ```javascript
