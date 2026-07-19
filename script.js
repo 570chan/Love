@@ -1,4 +1,3 @@
-if (window.location.hostname.split('').reverse().join('') == "moc.pedhnaoat") {
   function loadHeartImage(_0x48496b = "./heart.png") {
     return new Promise((_0x3b1e3e, _0x2d92af) => {
       const _0x1299f9 = new Image();
@@ -279,4 +278,3 @@ if (window.location.hostname.split('').reverse().join('') == "moc.pedhnaoat") {
     camera.updateProjectionMatrix();
     renderer.setSize(_0x25bfeb, _0x43bec5);
   });
-}
