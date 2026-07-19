@@ -9,3 +9,14 @@
 <div align="center">
 <img src="https://i.ibb.co/RTGYRTgs/taoanhdep-blue-archive-70635.png" />
 </div>
+
+### How do I use it?
+
+To use it, you need to go to the index.htm file and find the following section (right above).
+```html
+<script>
+const texts = ["Yu.meow","Yu.meo","Yu.ely"];
+const youtubeId = "VBO4xoFlNhI";
+</script>
+```
+Now you need to change "const texts" to the name you want in square brackets, and you can add more names if you like.
