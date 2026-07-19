@@ -16,16 +16,11 @@
   renderer.setSize(width, height);
   document.getElementById("threejs-canvas").appendChild(renderer.domElement);
   
-  // Đặt Camera ở tâm (0,0,0) để các vật thể bao bọc xung quanh thành vòng tròn
   camera.position.set(0, 0, 0);
   camera.rotation.y = 0.5;
 
-  // Bán kính vòng tròn bao quanh camera
-  const radius = 25; 
-
   renderer.domElement.addEventListener("wheel", _0x1f6767 => {
     _0x1f6767.preventDefault();
-    // Thay đổi góc nhìn (FOV) khi cuộn chuột để zoom thay vì đổi vị trí Z
     camera.fov += _0x1f6767.deltaY * 0.05;
     camera.fov = Math.max(30, Math.min(camera.fov, 90));
     camera.updateProjectionMatrix();
@@ -83,15 +78,12 @@
   let starMeshes = [];
   function createStars() {
     const _0x50fe89 = new THREE.SphereGeometry(0.07, 0x6, 0x6);
-    const _0x5001f8 = new THREE.MeshBasicMaterial({
-      'color': 0xffffff
-    });
+    const _0x5001f8 = new THREE.MeshBasicMaterial({ 'color': 0xffffff });
     for (let _0x29c266 = 0x0; _0x29c266 < 0x320; _0x29c266++) {
       const _0x4b2101 = new THREE.Mesh(_0x50fe89, _0x5001f8);
-      // Tạo bầu trời sao dạng hình cầu bao bọc không gian xa ngoài cùng
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos((Math.random() * 2) - 1);
-      const dist = 50 + Math.random() * 20;
+      const dist = 60 + Math.random() * 20;
       _0x4b2101.position.x = dist * Math.sin(phi) * Math.cos(theta);
       _0x4b2101.position.y = dist * Math.sin(phi) * Math.sin(theta);
       _0x4b2101.position.z = dist * Math.cos(phi);
@@ -104,34 +96,43 @@
   function createFallingTexts() {
     textMeshes.forEach(_0x1a7b31 => scene.remove(_0x1a7b31));
     textMeshes = [];
-    for (let _0x24b5af = 0x0; _0x24b5af < 0xc8; _0x24b5af++) {
+    
+    // Giữ số lượng lớn tầm 400 để tạo không gian dày đặc
+    for (let _0x24b5af = 0x0; _0x24b5af < 400; _0x24b5af++) {
       const _0xa664bf = texts[Math.floor(Math.random() * texts.length)];
-      const {
-        texture: _0x1869cf,
-        aspect: _0x5acdbd
-      } = createTextTexture(_0xa664bf);
+      const { texture: _0x1869cf, aspect: _0x5acdbd } = createTextTexture(_0xa664bf);
       _0x1869cf.needsUpdate = true;
-      const _0x49c73a = 0x3 * _0x5acdbd;
+      const _0x49c73a = 0.3 * _0x5acdbd;
       const _0x54dee9 = new THREE.PlaneGeometry(_0x49c73a, 0x3);
+      
       const _0x4e41dd = new THREE.MeshBasicMaterial({
         'map': _0x1869cf,
         'transparent': true,
-        'depthWrite': false,
+        'depthWrite': true, // Đổi thành true để nhận diện thứ tự trước sau
         'depthTest': true,
         'color': 0xffffff,
         'side': THREE.DoubleSide
       });
       const _0xe4de67 = new THREE.Mesh(_0x54dee9, _0x4e41dd);
       
-      // SỬA ĐỔI: Phân bổ vị trí ngẫu nhiên theo tọa độ vòng tròn xung quanh góc (0,0)
       const angle = Math.random() * Math.PI * 2;
-      _0xe4de67.position.x = Math.cos(angle) * radius;
-      _0xe4de67.position.y = Math.random() * 40 - 20; // Độ cao rơi tự do
-      _0xe4de67.position.z = Math.sin(angle) * radius;
+      // SỬA ĐỔI CHÍNH: Bán kính phân bổ ngẫu nhiên cực rộng từ sát cam (1.5) tới xa (35)
+      const randomRadius = 1.5 + Math.random() * 33.5;
       
+      _0xe4de67.position.x = Math.cos(angle) * randomRadius;
+      // Độ cao Y tỷ lệ với khoảng cách xa để giữ góc nhìn cân đối
+      _0xe4de67.position.y = (Math.random() - 0.5) * (randomRadius * 1.5); 
+      _0xe4de67.position.z = Math.sin(angle) * randomRadius;
+      
+      // Nếu ở quá sát camera, scale nhỏ lại một chút để không chiếm toàn màn hình
+      if (randomRadius < 5) {
+        const s = randomRadius / 5;
+        _0xe4de67.scale.set(s, s, 1);
+      }
+
       _0xe4de67.userData = {
         phase: Math.random() * Math.PI * 0x2,
-        angle: angle // Lưu lại góc để tính toán chuyển động tròn nếu cần
+        radius: randomRadius
       };
       scene.add(_0xe4de67);
       textMeshes.push(_0xe4de67);
@@ -142,26 +143,32 @@
   function createFallingHearts(_0x379ef8) {
     heartMeshes.forEach(_0x141d1e => scene.remove(_0x141d1e));
     heartMeshes = [];
-    for (let _0x96b054 = 0x0; _0x96b054 < 0xf; _0x96b054++) {
+    
+    for (let _0x96b054 = 0x0; _0x96b054 < 80; _0x96b054++) {
       const _0x36b57c = new THREE.PlaneGeometry(0x1, 0x1);
       const _0x5cee8f = new THREE.MeshBasicMaterial({
         'map': _0x379ef8,
         'transparent': true,
-        'depthWrite': false,
+        'depthWrite': true,
         'depthTest': true,
         'side': THREE.DoubleSide
       });
       const _0x3b9b90 = new THREE.Mesh(_0x36b57c, _0x5cee8f);
       
-      // SỬA ĐỔI: Phân bổ vị trí trái tim theo tọa độ vòng tròn quanh góc (0,0)
       const angle = Math.random() * Math.PI * 2;
-      _0x3b9b90.position.x = Math.cos(angle) * (radius - 2); // Hơi lệch bán kính một chút để đan xen
-      _0x3b9b90.position.y = Math.random() * 40 - 20;
-      _0x3b9b90.position.z = Math.sin(angle) * (radius - 2);
+      // Trái tim cũng phân bổ từ sát camera tới xa dần
+      const randomRadius = 1.0 + Math.random() * 34.0;
       
-      const _0x582ecb = 0x1 + Math.random() * 1.5;
-      _0x3b9b90.scale.set(_0x582ecb, _0x582ecb, 0x1);
-      _0x3b9b90.userData = { angle: angle };
+      _0x3b9b90.position.x = Math.cos(angle) * randomRadius;
+      _0x3b9b90.position.y = (Math.random() - 0.5) * (randomRadius * 1.5);
+      _0x3b9b90.position.z = Math.sin(angle) * randomRadius;
+      
+      // Scale trái tim ngẫu nhiên, dựa trên độ xa gần
+      const baseScale = 1.0 + Math.random() * 1.5;
+      const distScale = randomRadius < 4 ? (randomRadius / 4) : 1;
+      _0x3b9b90.scale.set(baseScale * distScale, baseScale * distScale, 1);
+      
+      _0x3b9b90.userData = { radius: randomRadius };
       scene.add(_0x3b9b90);
       heartMeshes.push(_0x3b9b90);
     }
@@ -176,11 +183,10 @@
     });
     const _0xd3cfa5 = new THREE.Mesh(_0x1bccac, _0x5508fd);
     
-    // Sao băng bay ngẫu nhiên từ ngoài không gian nền
     const angle = Math.random() * Math.PI * 2;
-    _0xd3cfa5.position.x = Math.cos(angle) * 40;
+    _0xd3cfa5.position.x = Math.cos(angle) * 50;
     _0xd3cfa5.position.y = Math.random() * 30 + 10;
-    _0xd3cfa5.position.z = Math.sin(angle) * 40;
+    _0xd3cfa5.position.z = Math.sin(angle) * 50;
     
     _0xd3cfa5.userData = {
       'vx': (Math.random() - 0.5) * 0.5,
@@ -202,14 +208,11 @@
     isDragging = true;
     lastX = _0x15698c.clientX;
   });
-  window.addEventListener("mouseup", () => {
-    isDragging = false;
-  });
+  window.addEventListener("mouseup", () => { isDragging = false; });
   window.addEventListener("mousemove", _0x12bba7 => {
     if (isDragging) {
       const _0x4ad287 = _0x12bba7.clientX - lastX;
       lastX = _0x12bba7.clientX;
-      // Quay camera quanh trục Y tại chỗ (lia cam nhìn xung quanh 360 độ)
       targetRotationY += _0x4ad287 * 0.003; 
     }
   });
@@ -219,9 +222,7 @@
       lastTouchX = _0x407186.touches[0x0].clientX;
     }
   });
-  window.addEventListener("touchend", () => {
-    isTouching = false;
-  });
+  window.addEventListener("touchend", () => { isTouching = false; });
   window.addEventListener("touchmove", _0x54fba1 => {
     if (isTouching && _0x54fba1.touches.length === 0x1) {
       const _0x1438b1 = _0x54fba1.touches[0x0].clientX;
@@ -233,25 +234,24 @@
 
   function animate() {
     requestAnimationFrame(animate);
-    
-    // Tạo chuyển động lia quay mượt mà cho Camera góc 360 độ
     camera.rotation.y += (targetRotationY - camera.rotation.y) * 0.08;
-    
     const _0x4b0f0b = Date.now();
 
     textMeshes.forEach(_0x2318e2 => {
-      // Ép mặt phẳng chữ luôn đối diện trực tiếp vào vị trí Camera (0,0,0)
       _0x2318e2.lookAt(camera.position); 
       
-      // Hiệu ứng rơi tự do trục Y
-      _0x2318e2.position.y -= 0.025 + Math.random() * 0.005;
+      // Tốc độ rơi tỷ lệ thuận với khoảng cách (gần rơi nhanh hơn một chút để tạo cảm giác thực tế)
+      const speed = (0.02 + (_0x2318e2.userData.radius * 0.0005));
+      _0x2318e2.position.y -= speed;
       
-      // Khi rơi xuống quá biên dưới, đưa ngược lại lên trên và random lại góc phân bố
-      if (_0x2318e2.position.y < -15) {
-        _0x2318e2.position.y = Math.random() * 10 + 15;
+      // Giới hạn biên dưới động dựa theo bán kính của chính vật thể đó
+      const boundY = _0x2318e2.userData.radius * 0.8;
+      if (_0x2318e2.position.y < -boundY) {
+        _0x2318e2.position.y = boundY;
         const newAngle = Math.random() * Math.PI * 2;
-        _0x2318e2.position.x = Math.cos(newAngle) * radius;
-        _0x2318e2.position.z = Math.sin(newAngle) * radius;
+        const r = _0x2318e2.userData.radius;
+        _0x2318e2.position.x = Math.cos(newAngle) * r;
+        _0x2318e2.position.z = Math.sin(newAngle) * r;
       }
 
       const _0x2fe3b8 = (Math.sin(_0x4b0f0b * 0.0005 + _0x2318e2.userData.phase) + 0x1) / 0x2;
@@ -261,16 +261,17 @@
     });
 
     heartMeshes.forEach(_0x54dfd5 => {
-      // Ép mặt phẳng trái tim luôn đối diện vào tâm Camera
       _0x54dfd5.lookAt(camera.position);
+      const speed = (0.03 + (_0x54dfd5.userData.radius * 0.0005));
+      _0x54dfd5.position.y -= speed;
       
-      _0x54dfd5.position.y -= 0.04 + Math.random() * 0.02;
-      
-      if (_0x54dfd5.position.y < -15) {
-        _0x54dfd5.position.y = Math.random() * 10 + 15;
+      const boundY = _0x54dfd5.userData.radius * 0.8;
+      if (_0x54dfd5.position.y < -boundY) {
+        _0x54dfd5.position.y = boundY;
         const newAngle = Math.random() * Math.PI * 2;
-        _0x54dfd5.position.x = Math.cos(newAngle) * (radius - 2);
-        _0x54dfd5.position.z = Math.sin(newAngle) * (radius - 2);
+        const r = _0x54dfd5.userData.radius;
+        _0x54dfd5.position.x = Math.cos(newAngle) * r;
+        _0x54dfd5.position.z = Math.sin(newAngle) * r;
       }
     });
 
@@ -279,9 +280,7 @@
         _0x49e829.userData.tail.shift();
       }
       _0x49e829.userData.tail.push({
-        'x': _0x49e829.position.x,
-        'y': _0x49e829.position.y,
-        'z': _0x49e829.position.z
+        'x': _0x49e829.position.x, 'y': _0x49e829.position.y, 'z': _0x49e829.position.z
       });
       _0x49e829.position.x += _0x49e829.userData.vx;
       _0x49e829.position.y += _0x49e829.userData.vy;
@@ -302,9 +301,8 @@
       }
       _0x49e829.material.opacity = 0.8;
       
-      // Xóa sao băng nếu bay ra quá xa tầm nhìn hình cầu bao quanh
       const distFromCenter = Math.sqrt(_0x49e829.position.x**2 + _0x49e829.position.y**2 + _0x49e829.position.z**2);
-      if (distFromCenter > 70 || _0x49e829.position.y < -30) {
+      if (distFromCenter > 80 || _0x49e829.position.y < -30) {
         scene.remove(_0x49e829);
         shootingStars.splice(_0x135e8f, 0x1);
       }
