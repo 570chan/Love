@@ -18,3 +18,16 @@ const youtubeId = "VBO4xoFlNhI";
 </script>
 ```
 Now you need to change "const texts" to the name you want in square brackets, and you can add more names if you like.
+
+- **Adjusting the number of characters**: Find the createFallingTexts() function, change the number 350 in the loop line
+  ```javascript
+  for (let i = 0; i < 350; i++) { 
+  ```
+  - The larger the magic number, the more frequently the text appears. I advise you that if you want dense text, the magic number shouldn't exceed 600, If you're going to take a risk, don't exceed 1000 Because that's the limit; if you want to push it up to 2000-5000, you need to use advanced techniques called ``THREE.InstancedMesh`` or the ``THREE.Points`` particle system.
+
+ - **Adjust the falling speed of the heart image**: Find this section just below and change the number to 0.04.
+   ```javascript
+   mesh.position.y -= 0.04 + Math.random() * 0.02;
+    ```
+
+   - The base value is 0.04. If you want the heart rate to slow down to match the speed of the text, adjust it to 0.02. I recommend setting it to 60 if you want a denser image; the limit for this is 300.
