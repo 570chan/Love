@@ -13,17 +13,16 @@
   const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
   const renderer = new THREE.WebGLRenderer({
     'alpha': true,
-    'powerPreference': "high-performance", // Ép trình duyệt dùng GPU rời hiệu năng cao
-    'antialias': false // Tắt khử răng cưa nếu muốn mượt tối đa trên mobile (có thể bật lại nếu cần nét)
+    'powerPreference': "high-performance",
+    'antialias': false
   });
   renderer.setSize(width, height);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Giới hạn pixel ratio tối đa là 2 để tránh giật lag màn hình 2K/4K
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   document.getElementById("threejs-canvas").appendChild(renderer.domElement);
   
   camera.position.set(0, 0, 0);
   camera.rotation.y = 0.5;
 
-  // Tạo đối tượng kiểm tra vùng nhìn thấy của Camera (Frustum)
   const frustum = new THREE.Frustum();
   const cameraViewProjectionMatrix = new THREE.Matrix4();
 
@@ -34,7 +33,6 @@
     camera.updateProjectionMatrix();
   });
 
-  // Tối ưu Texture: Chỉ tạo một số Canvas Texture dùng chung thay vì mỗi Mesh tạo 1 texture riêng biệt
   const textCache = {};
   function getOrCreateTextTexture(_0xa664bf) {
     if (textCache[_0xa664bf]) return textCache[_0xa664bf];
@@ -67,7 +65,7 @@
     _0x134356.strokeText(_0xa664bf, _0x3f5726.width / 2, _0x3f5726.height / 2);
     
     const tex = new THREE.CanvasTexture(_0x3f5726);
-    tex.minFilter = THREE.LinearFilter; // Tối ưu bộ nhớ lọc ảnh
+    tex.minFilter = THREE.LinearFilter;
     
     textCache[_0xa664bf] = {
       'texture': tex,
@@ -96,7 +94,7 @@
 
   let starMeshes = [];
   function createStars() {
-    const _0x50fe89 = new THREE.SphereGeometry(0.07, 4, 4); // Giảm segment xuống 4x4 để vẽ cực nhanh
+    const _0x50fe89 = new THREE.SphereGeometry(0.07, 4, 4);
     const _0x5001f8 = new THREE.MeshBasicMaterial({ 'color': 0xffffff });
     for (let _0x29c266 = 0; _0x29c266 < 400; _0x29c266++) {
       const _0x4b2101 = new THREE.Mesh(_0x50fe89, _0x5001f8);
@@ -107,7 +105,7 @@
       _0x4b2101.position.y = dist * Math.sin(phi) * Math.sin(theta);
       _0x4b2101.position.z = dist * Math.cos(phi);
       
-      _0x4b2101.matrixAutoUpdate = false; // Tắt tự động update ma trận vì sao đứng yên
+      _0x4b2101.matrixAutoUpdate = false;
       _0x4b2101.updateMatrix();
       scene.add(_0x4b2101);
       starMeshes.push(_0x4b2101);
@@ -129,7 +127,7 @@
         'transparent': true,
         'depthWrite': true,
         'depthTest': true,
-        'alphaTest': 0.3, // KHẮC PHỤC LỖI VỆT ĐEN HOÀN TOÀN
+        'alphaTest': 0.3,
         'side': THREE.DoubleSide
       });
       const _0xe4de67 = new THREE.Mesh(_0x54dee9, _0x4e41dd);
@@ -152,8 +150,10 @@
         speed: (0.02 + (randomRadius * 0.0005))
       };
       
-      _0xe4de67.matrixAutoUpdate = false; // Tối ưu: Kiểm soát update ma trận thủ công
+      _0xe4de67.matrixAutoUpdate = false;
       _0xe4de67.updateMatrix();
+      _0xe4de67.geometry.computeBoundingSphere(); // FIX MÀN ĐEN: Báo cho ThreeJS bán kính va chạm khối
+      
       scene.add(_0xe4de67);
       textMeshes.push(_0xe4de67);
     }
@@ -171,7 +171,7 @@
         'transparent': true,
         'depthWrite': true,
         'depthTest': true,
-        'alphaTest': 0.2, // KHẮC PHỤC LỖI VỆT ĐEN TRÁI TIM
+        'alphaTest': 0.2,
         'side': THREE.DoubleSide
       });
       const _0x3b9b90 = new THREE.Mesh(_0x36b57c, _0x5cee8f);
@@ -194,6 +194,8 @@
       
       _0x3b9b90.matrixAutoUpdate = false;
       _0x3b9b90.updateMatrix();
+      _0x3b9b90.geometry.computeBoundingSphere(); // FIX MÀN ĐEN
+      
       scene.add(_0x3b9b90);
       heartMeshes.push(_0x3b9b90);
     }
@@ -257,19 +259,15 @@
   function animate() {
     requestAnimationFrame(animate);
     
-    // Cập nhật mượt góc quay camera
     camera.rotation.y += (targetRotationY - camera.rotation.y) * 0.08;
     
-    // TỐI ƯU CỐT LÕI: Tính toán không gian hiển thị của Camera hiện tại
     camera.updateMatrixWorld();
     cameraViewProjectionMatrix.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
     frustum.setFromProjectionMatrix(cameraViewProjectionMatrix);
 
     const _0x4b0f0b = Date.now();
 
-    // Duyệt danh sách chữ rơi
     textMeshes.forEach(_0x2318e2 => {
-      // 1. TÍNH CHUYỂN ĐỘNG TRƯỚC (Vì đối tượng vẫn rơi dù ở ngoài camera)
       _0x2318e2.position.y -= _0x2318e2.userData.speed;
       const boundY = _0x2318e2.userData.radius * 0.8;
       
@@ -281,12 +279,14 @@
         _0x2318e2.position.z = Math.sin(newAngle) * r;
       }
 
-      // 2. CHỈ RENDER KHI NẰM TRONG FRUSTUM (LIA CAMERA QUA MỚI XỬ LÝ)
+      // Ép buộc cập nhật lại Ma trận tọa độ thế giới khi di chuyển vật thể thủ công
+      _0x2318e2.updateMatrix();
+      _0x2318e2.updateMatrixWorld();
+
       if (frustum.intersectsMesh(_0x2318e2)) {
-        _0x2318e2.visible = true; // Bật hiển thị
-        _0x2318e2.lookAt(camera.position); // Quay mặt vào camera
+        _0x2318e2.visible = true;
+        _0x2318e2.lookAt(camera.position);
         
-        // Đổi màu Gradient nhấp nháy theo thời gian
         const _0x2fe3b8 = (Math.sin(_0x4b0f0b * 0.0005 + _0x2318e2.userData.phase) + 1) / 2;
         const _0x53cb76 = [
           Math.round(255 + (255 - 255) * _0x2fe3b8), 
@@ -294,13 +294,11 @@
           Math.round(255 + (180 - 255) * _0x2fe3b8)
         ];
         _0x2318e2.material.color.setHex(_0x53cb76[0] << 16 | _0x53cb76[1] << 8 | _0x53cb76[2]);
-        _0x2318e2.updateMatrix(); // Chỉ cập nhật ma trận đồ họa khi nằm trong camera nhìn thấy
       } else {
-        _0x2318e2.visible = false; // Tắt hẳn việc render mesh ngoài camera
+        _0x2318e2.visible = false;
       }
     });
 
-    // Duyệt danh sách trái tim rơi
     heartMeshes.forEach(_0x54dfd5 => {
       _0x54dfd5.position.y -= _0x54dfd5.userData.speed;
       const boundY = _0x54dfd5.userData.radius * 0.8;
@@ -313,17 +311,17 @@
         _0x54dfd5.position.z = Math.sin(newAngle) * r;
       }
 
-      // CHỈ RENDER TIM KHI LIA QUA KÍNH CAMERA
+      _0x54dfd5.updateMatrix();
+      _0x54dfd5.updateMatrixWorld();
+
       if (frustum.intersectsMesh(_0x54dfd5)) {
         _0x54dfd5.visible = true;
         _0x54dfd5.lookAt(camera.position);
-        _0x54dfd5.updateMatrix();
       } else {
         _0x54dfd5.visible = false;
       }
     });
 
-    // Xử lý sao băng nền
     shootingStars.forEach((_0x49e829, _0x135e8f) => {
       _0x49e829.position.x += _0x49e829.userData.vx;
       _0x49e829.position.y += _0x49e829.userData.vy;
