@@ -32,6 +32,7 @@ Now you need to change "const texts" to the name you want in square brackets, an
 
    - The base value is 0.04. If you want the heart rate to slow down to match the speed of the text, adjust it to 0.02. I recommend setting it to 60 if you want a denser image; the limit for this is 300.
 
-[![Website](https://img.shields.io/badge/Website%20preview-visit-success?style=for-the-badge)](https://hanni-love.vercel.app) 
+[![Website](https://img.shields.io/badge/Website-Live-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://hanni-love.vercel.app)
 ![Javascript](https://img.shields.io/badge/Made%20with-Javascript-F7DF1E?style=for-the-badge&logo=Javascript&logoColor=white)
 ![HTML](https://img.shields.io/badge/Made%20with-HTML-E34F26?style=for-the-badge&logo=HTML5&logoColor=white)
+[![Deploy](https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
