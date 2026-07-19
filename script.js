@@ -102,7 +102,8 @@
         'transparent': true,
         'depthWrite': false,
         'depthTest': true,
-        'color': 0xffffff
+        'color': 0xffffff,
+        'side': THREE.DoubleSide // THÊM VÀO ĐÂY: Hiển thị cả 2 mặt chữ
       });
       const _0xe4de67 = new THREE.Mesh(_0x54dee9, _0x4e41dd);
       _0xe4de67.position.x = (Math.random() - 0.5) * 0x64;
@@ -123,7 +124,8 @@
         'map': _0x379ef8,
         'transparent': true,
         'depthWrite': false,
-        'depthTest': true
+        'depthTest': true,
+        'side': THREE.DoubleSide // THÊM VÀO ĐÂY: Hiển thị cả 2 mặt tim
       });
       const _0x3b9b90 = new THREE.Mesh(_0x36b57c, _0x5cee8f);
       _0x3b9b90.position.x = (Math.random() - 0.5) * 0x1e;
@@ -196,6 +198,7 @@
     camera.rotation.y += (targetRotationY - camera.rotation.y) * 0.08;
     const _0x4b0f0b = Date.now();
     textMeshes.forEach(_0x2318e2 => {
+      _0x2318e2.lookAt(camera.position); // THÊM VÀO ĐÂY: Chữ luôn hướng về camera
       _0x2318e2.position.y -= 0.025 + Math.random() * 0.005;
       if (_0x2318e2.position.y < -0xc) {
         _0x2318e2.position.y = Math.random() * 0x14 + 0xa;
@@ -214,6 +217,7 @@
       _0x2318e2.material.color.setHex(_0x3a56ee);
     });
     heartMeshes.forEach(_0x54dfd5 => {
+      _0x54dfd5.lookAt(camera.position); // THÊM VÀO ĐÂY: Tim luôn hướng về camera
       _0x54dfd5.position.y -= 0.04 + Math.random() * 0.02;
       _0x54dfd5.position.x += (Math.random() - 0.5) * 0.05;
       if (_0x54dfd5.position.y < -0xc) {
