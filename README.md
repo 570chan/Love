@@ -9,6 +9,17 @@
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)
 ![WebGL](https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white)
+![Canvas API](https://img.shields.io/badge/Canvas_API-4FC3F7?style=for-the-badge)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+### the APIs we use 
+![Canvas API](https://img.shields.io/badge/Canvas_API-4FC3F7?style=for-the-badge)
+![WebGL](https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white)
+![DOM API](https://img.shields.io/badge/DOM_API-E34F26?style=for-the-badge&logo=html5&logoColor=white)
+![Event API](https://img.shields.io/badge/Event_API-FF9800?style=for-the-badge)
+![Touch Events](https://img.shields.io/badge/Touch_Events-00ACC1?style=for-the-badge)
+![Mouse Events](https://img.shields.io/badge/Mouse_Events-7B1FA2?style=for-the-badge)
+![Wheel Events](https://img.shields.io/badge/Wheel_Events-5E35B1?style=for-the-badge)
+![Performance API](https://img.shields.io/badge/Performance_API-43A047?style=for-the-badge)
 ### How do I use it?
 
 - **To use it**, you need to go to the index.htm file and find the following section (right above).
