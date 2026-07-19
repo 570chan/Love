@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
+
+  <!-- PLYR -->
+
+  <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+
+  <style>
+    body { margin: 0; background: #000; color:#fff; font-weight:100; touch-action:none }
+  </style>
+</head>
+<body>
+
+
+<script>
+const texts = ["Yu.meow","Yu.meo","Yu.ely"];
+const youtubeId = "VBO4xoFlNhI";
+</script>
+
+<div id="threejs-canvas"></div>
+
+
+<!-- NÚT BẬT/TẮT -->
+    <style>
+    #toggle-music {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      color: #fff;
+      padding: 6px;
+      transition: transform 0.2s ease;
+      z-index: 999999;
+    }
+    #toggle-music.playing #icon-note,
+    #toggle-music.playing #icon-note-slash {
+      animation: spin 3s linear infinite;
+    }
+    #toggle-music svg { display: block; }
+    .playing #icon-note {
+    display: block !important;
+}
+
+.playing #icon-note-slash {
+    display: none !important;
+}
+    @keyframes spin {
+      from { transform: rotate(0deg);}
+      to { transform: rotate(360deg);}
+    }
+  </style>
+
+<button id="toggle-music">
+  <svg id="icon-note" width="24" height="24" style="display:none">
+    <path fill="currentColor" d="M12 3v10.55A4 4 0 1 0 14 17V7h4V3h-6z"/>
+  </svg>
+  <svg id="icon-note-slash" width="24" height="24">
+    <path fill="currentColor" d="M10 3v10.55A4 4 0 1 0 12 15.55V5h4V3h-6z"/>
+    <line x1="3" y1="3" x2="21" y2="21" stroke="currentColor" stroke-width="2"/>
+  </svg>
+</button>
+
+<!-- AUDIO MP3 -->
+
+<!-- PLYR YOUTUBE HIDDEN -->
+<div id="plyr-wrapper" style="width:0;height:0;overflow:hidden;opacity:0">
+    <div id="plyr-player"
+     data-plyr-provider="youtube"
+     data-plyr-embed-id="VBO4xoFlNhI"
+     data-plyr-embed-url="https://www.youtube.com/embed/VBO4xoFlNhI?vq=small"></div>
+</div>
+
+<script>
+let isPlaying = false;
+const btn = document.getElementById("toggle-music");
+
+const audioEl = document.getElementById("bg-audio");
+
+// INIT PLYR nếu có Youtube
+let plyrPlayer = null;
+if (typeof youtubeId !== "undefined") {
+    plyrPlayer = new Plyr('#plyr-player', {
+        controls: [],
+        autoplay: false,
+        muted: false
+    });
+    
+   plyrPlayer.on('ready', () => {
+    const yt = plyrPlayer.embed;
+    yt.setPlaybackQuality('small');
+    yt.setPlaybackRate(1);
+});
+}
+
+// PLAY
+function playMedia() {
+  if (plyrPlayer) {
+    plyrPlayer.play();
+    return;
+  }
+  if (audioEl) audioEl.play();
+}
+
+// PAUSE
+function pauseMedia() {
+  if (plyrPlayer) {
+    plyrPlayer.pause();
+    return;
+  }
+  if (audioEl) audioEl.pause();
+}
+
+// CLICK
+btn.addEventListener("click", () => {
+  if (!isPlaying) playMedia();
+  else pauseMedia();
+  isPlaying = !isPlaying;
+  btn.classList.toggle("playing", isPlaying);
+});
+</script>
+
+
+<script src="script.js?v=01"></script>
+
+</body>
+</html>
