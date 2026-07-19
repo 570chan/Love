@@ -9,7 +9,7 @@
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)
 ![WebGL](https://img.shields.io/badge/WebGL-990000?style=for-the-badge&logo=webgl&logoColor=white)
-![Canvas API](https://img.shields.io/badge/Canvas_API-4FC3F7?style=for-the-badge)
+![Plyr](https://img.shields.io/badge/Plyr-00B3FF?style=for-the-badge&logo=plyr&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ### the APIs we use 
 ![Canvas API](https://img.shields.io/badge/Canvas_API-4FC3F7?style=for-the-badge)
@@ -20,6 +20,9 @@
 ![Mouse Events](https://img.shields.io/badge/Mouse_Events-7B1FA2?style=for-the-badge)
 ![Wheel Events](https://img.shields.io/badge/Wheel_Events-5E35B1?style=for-the-badge)
 ![Performance API](https://img.shields.io/badge/Performance_API-43A047?style=for-the-badge)
+### deploy 
+[![Deploy](https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
+[![Website](https://img.shields.io/badge/Website-Live-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://hanni-love.vercel.app)
 ### How do I use it?
 
 - **To use it**, you need to go to the index.htm file and find the following section (right above).
@@ -43,8 +46,3 @@ const youtubeId = "VBO4xoFlNhI";
     ```
 
    - The base value is 0.04. If you want the heart rate to slow down to match the speed of the text, adjust it to 0.02. I recommend setting it to 60 if you want a denser image; the limit for this is 300.
-
-[![Website](https://img.shields.io/badge/Website-Live-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://hanni-love.vercel.app)
-![Javascript](https://img.shields.io/badge/Made%20with-Javascript-F7DF1E?style=for-the-badge&logo=Javascript&logoColor=white)
-![HTML](https://img.shields.io/badge/Made%20with-HTML-E34F26?style=for-the-badge&logo=HTML5&logoColor=white)
-[![Deploy](https://img.shields.io/badge/Deploy-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
