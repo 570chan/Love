@@ -15,13 +15,22 @@
   });
   renderer.setSize(width, height);
   document.getElementById("threejs-canvas").appendChild(renderer.domElement);
-  camera.position.z = 0x14;
+  
+  // Đặt Camera ở tâm (0,0,0) để các vật thể bao bọc xung quanh thành vòng tròn
+  camera.position.set(0, 0, 0);
   camera.rotation.y = 0.5;
+
+  // Bán kính vòng tròn bao quanh camera
+  const radius = 25; 
+
   renderer.domElement.addEventListener("wheel", _0x1f6767 => {
     _0x1f6767.preventDefault();
-    camera.position.z += _0x1f6767.deltaY * 0.006;
-    camera.position.z = Math.max(0x3, Math.min(camera.position.z, 0x32));
+    // Thay đổi góc nhìn (FOV) khi cuộn chuột để zoom thay vì đổi vị trí Z
+    camera.fov += _0x1f6767.deltaY * 0.05;
+    camera.fov = Math.max(30, Math.min(camera.fov, 90));
+    camera.updateProjectionMatrix();
   });
+
   function createTextTexture(_0x8a7755) {
     const _0x1b21ad = document.createElement("canvas");
     const _0x31d6ac = _0x1b21ad.getContext('2d');
@@ -54,6 +63,7 @@
       'aspect': _0x3f5726.width / _0x3f5726.height
     };
   }
+
   function createHeartTexture(_0x48db3f) {
     const _0x1fb876 = document.createElement("canvas");
     _0x1fb876.width = 256;
@@ -69,6 +79,7 @@
     _0x533fe5.drawImage(_0x48db3f, _0x262653, _0x5e8b66, _0x59fc14, _0xbb8015);
     return new THREE.CanvasTexture(_0x1fb876);
   }
+
   let starMeshes = [];
   function createStars() {
     const _0x50fe89 = new THREE.SphereGeometry(0.07, 0x6, 0x6);
@@ -77,13 +88,18 @@
     });
     for (let _0x29c266 = 0x0; _0x29c266 < 0x320; _0x29c266++) {
       const _0x4b2101 = new THREE.Mesh(_0x50fe89, _0x5001f8);
-      _0x4b2101.position.x = (Math.random() - 0.5) * 0x78;
-      _0x4b2101.position.y = Math.random() * 0x50 - 0x14;
-      _0x4b2101.position.z = (Math.random() - 0.5) * 0x78 - 0x14;
+      // Tạo bầu trời sao dạng hình cầu bao bọc không gian xa ngoài cùng
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos((Math.random() * 2) - 1);
+      const dist = 50 + Math.random() * 20;
+      _0x4b2101.position.x = dist * Math.sin(phi) * Math.cos(theta);
+      _0x4b2101.position.y = dist * Math.sin(phi) * Math.sin(theta);
+      _0x4b2101.position.z = dist * Math.cos(phi);
       scene.add(_0x4b2101);
       starMeshes.push(_0x4b2101);
     }
   }
+
   let textMeshes = [];
   function createFallingTexts() {
     textMeshes.forEach(_0x1a7b31 => scene.remove(_0x1a7b31));
@@ -103,17 +119,25 @@
         'depthWrite': false,
         'depthTest': true,
         'color': 0xffffff,
-        'side': THREE.DoubleSide // THÊM VÀO ĐÂY: Hiển thị cả 2 mặt chữ
+        'side': THREE.DoubleSide
       });
       const _0xe4de67 = new THREE.Mesh(_0x54dee9, _0x4e41dd);
-      _0xe4de67.position.x = (Math.random() - 0.5) * 0x64;
-      _0xe4de67.position.y = Math.random() * 0x20 - 0xc;
-      _0xe4de67.position.z = (Math.random() - 0.5) * 0x28;
-      _0xe4de67.userData.phase = Math.random() * Math.PI * 0x2;
+      
+      // SỬA ĐỔI: Phân bổ vị trí ngẫu nhiên theo tọa độ vòng tròn xung quanh góc (0,0)
+      const angle = Math.random() * Math.PI * 2;
+      _0xe4de67.position.x = Math.cos(angle) * radius;
+      _0xe4de67.position.y = Math.random() * 40 - 20; // Độ cao rơi tự do
+      _0xe4de67.position.z = Math.sin(angle) * radius;
+      
+      _0xe4de67.userData = {
+        phase: Math.random() * Math.PI * 0x2,
+        angle: angle // Lưu lại góc để tính toán chuyển động tròn nếu cần
+      };
       scene.add(_0xe4de67);
       textMeshes.push(_0xe4de67);
     }
   }
+
   let heartMeshes = [];
   function createFallingHearts(_0x379ef8) {
     heartMeshes.forEach(_0x141d1e => scene.remove(_0x141d1e));
@@ -125,18 +149,24 @@
         'transparent': true,
         'depthWrite': false,
         'depthTest': true,
-        'side': THREE.DoubleSide // THÊM VÀO ĐÂY: Hiển thị cả 2 mặt tim
+        'side': THREE.DoubleSide
       });
       const _0x3b9b90 = new THREE.Mesh(_0x36b57c, _0x5cee8f);
-      _0x3b9b90.position.x = (Math.random() - 0.5) * 0x1e;
-      _0x3b9b90.position.y = Math.random() * 0x20 - 0xc;
-      _0x3b9b90.position.z = (Math.random() - 0.5) * 0x14;
+      
+      // SỬA ĐỔI: Phân bổ vị trí trái tim theo tọa độ vòng tròn quanh góc (0,0)
+      const angle = Math.random() * Math.PI * 2;
+      _0x3b9b90.position.x = Math.cos(angle) * (radius - 2); // Hơi lệch bán kính một chút để đan xen
+      _0x3b9b90.position.y = Math.random() * 40 - 20;
+      _0x3b9b90.position.z = Math.sin(angle) * (radius - 2);
+      
       const _0x582ecb = 0x1 + Math.random() * 1.5;
       _0x3b9b90.scale.set(_0x582ecb, _0x582ecb, 0x1);
+      _0x3b9b90.userData = { angle: angle };
       scene.add(_0x3b9b90);
       heartMeshes.push(_0x3b9b90);
     }
   }
+
   let shootingStars = [];
   function spawnShootingStar() {
     const _0x1bccac = new THREE.SphereGeometry(0.15, 0x8, 0x8);
@@ -145,23 +175,29 @@
       'transparent': true
     });
     const _0xd3cfa5 = new THREE.Mesh(_0x1bccac, _0x5508fd);
-    _0xd3cfa5.position.x = (Math.random() - 0.5) * 0x64;
-    _0xd3cfa5.position.y = Math.random() * 0x50 - 0x14;
-    _0xd3cfa5.position.z = -0x28 - Math.random() * 0x28;
+    
+    // Sao băng bay ngẫu nhiên từ ngoài không gian nền
+    const angle = Math.random() * Math.PI * 2;
+    _0xd3cfa5.position.x = Math.cos(angle) * 40;
+    _0xd3cfa5.position.y = Math.random() * 30 + 10;
+    _0xd3cfa5.position.z = Math.sin(angle) * 40;
+    
     _0xd3cfa5.userData = {
-      'vx': 0.4 + Math.random() * 0.3,
-      'vy': -0.2 - Math.random() * 0.2,
-      'vz': 0.7 + Math.random() * 0.5,
+      'vx': (Math.random() - 0.5) * 0.5,
+      'vy': -0.3 - Math.random() * 0.2,
+      'vz': (Math.random() - 0.5) * 0.5,
       'tail': []
     };
     scene.add(_0xd3cfa5);
     shootingStars.push(_0xd3cfa5);
   }
+
   let isDragging = false;
   let lastX = 0x0;
   let isTouching = false;
   let lastTouchX = 0x0;
   let targetRotationY = 0.5;
+
   renderer.domElement.addEventListener("mousedown", _0x15698c => {
     isDragging = true;
     lastX = _0x15698c.clientX;
@@ -173,7 +209,8 @@
     if (isDragging) {
       const _0x4ad287 = _0x12bba7.clientX - lastX;
       lastX = _0x12bba7.clientX;
-      targetRotationY += _0x4ad287 * 0.0015;
+      // Quay camera quanh trục Y tại chỗ (lia cam nhìn xung quanh 360 độ)
+      targetRotationY += _0x4ad287 * 0.003; 
     }
   });
   renderer.domElement.addEventListener("touchstart", _0x407186 => {
@@ -190,48 +227,53 @@
       const _0x1438b1 = _0x54fba1.touches[0x0].clientX;
       const _0x365625 = _0x1438b1 - lastTouchX;
       lastTouchX = _0x1438b1;
-      targetRotationY += _0x365625 * 0.0015;
+      targetRotationY += _0x365625 * 0.003;
     }
   });
+
   function animate() {
     requestAnimationFrame(animate);
+    
+    // Tạo chuyển động lia quay mượt mà cho Camera góc 360 độ
     camera.rotation.y += (targetRotationY - camera.rotation.y) * 0.08;
+    
     const _0x4b0f0b = Date.now();
+
     textMeshes.forEach(_0x2318e2 => {
-      _0x2318e2.lookAt(camera.position); // THÊM VÀO ĐÂY: Chữ luôn hướng về camera
+      // Ép mặt phẳng chữ luôn đối diện trực tiếp vào vị trí Camera (0,0,0)
+      _0x2318e2.lookAt(camera.position); 
+      
+      // Hiệu ứng rơi tự do trục Y
       _0x2318e2.position.y -= 0.025 + Math.random() * 0.005;
-      if (_0x2318e2.position.y < -0xc) {
-        _0x2318e2.position.y = Math.random() * 0x14 + 0xa;
-        _0x2318e2.position.x = (Math.random() - 0.5) * 0x1e;
-        _0x2318e2.position.z = (Math.random() - 0.5) * 0x28;
+      
+      // Khi rơi xuống quá biên dưới, đưa ngược lại lên trên và random lại góc phân bố
+      if (_0x2318e2.position.y < -15) {
+        _0x2318e2.position.y = Math.random() * 10 + 15;
+        const newAngle = Math.random() * Math.PI * 2;
+        _0x2318e2.position.x = Math.cos(newAngle) * radius;
+        _0x2318e2.position.z = Math.sin(newAngle) * radius;
       }
-      if (_0x2318e2.position.x > 0x10) {
-        _0x2318e2.position.x = -0x10;
-      }
-      if (_0x2318e2.position.x < -0x10) {
-        _0x2318e2.position.x = 0x10;
-      }
+
       const _0x2fe3b8 = (Math.sin(_0x4b0f0b * 0.0005 + _0x2318e2.userData.phase) + 0x1) / 0x2;
       const _0x53cb76 = [Math.round([0xff, 0xff, 0xff][0x0] + ([0xff, 0x69, 0xb4][0x0] - [0xff, 0xff, 0xff][0x0]) * _0x2fe3b8), Math.round([0xff, 0xff, 0xff][0x1] + ([0xff, 0x69, 0xb4][0x1] - [0xff, 0xff, 0xff][0x1]) * _0x2fe3b8), Math.round([0xff, 0xff, 0xff][0x2] + ([0xff, 0x69, 0xb4][0x2] - [0xff, 0xff, 0xff][0x2]) * _0x2fe3b8)];
       const _0x3a56ee = _0x53cb76[0x0] << 0x10 | _0x53cb76[0x1] << 0x8 | _0x53cb76[0x2];
       _0x2318e2.material.color.setHex(_0x3a56ee);
     });
+
     heartMeshes.forEach(_0x54dfd5 => {
-      _0x54dfd5.lookAt(camera.position); // THÊM VÀO ĐÂY: Tim luôn hướng về camera
+      // Ép mặt phẳng trái tim luôn đối diện vào tâm Camera
+      _0x54dfd5.lookAt(camera.position);
+      
       _0x54dfd5.position.y -= 0.04 + Math.random() * 0.02;
-      _0x54dfd5.position.x += (Math.random() - 0.5) * 0.05;
-      if (_0x54dfd5.position.y < -0xc) {
-        _0x54dfd5.position.y = Math.random() * 0x14 + 0xa;
-        _0x54dfd5.position.x = (Math.random() - 0.5) * 0x1e;
-        _0x54dfd5.position.z = (Math.random() - 0.5) * 0x14;
-      }
-      if (_0x54dfd5.position.x > 0x10) {
-        _0x54dfd5.position.x = -0x10;
-      }
-      if (_0x54dfd5.position.x < -0x10) {
-        _0x54dfd5.position.x = 0x10;
+      
+      if (_0x54dfd5.position.y < -15) {
+        _0x54dfd5.position.y = Math.random() * 10 + 15;
+        const newAngle = Math.random() * Math.PI * 2;
+        _0x54dfd5.position.x = Math.cos(newAngle) * (radius - 2);
+        _0x54dfd5.position.z = Math.sin(newAngle) * (radius - 2);
       }
     });
+
     shootingStars.forEach((_0x49e829, _0x135e8f) => {
       if (_0x49e829.userData.tail.length > 0x14) {
         _0x49e829.userData.tail.shift();
@@ -244,6 +286,7 @@
       _0x49e829.position.x += _0x49e829.userData.vx;
       _0x49e829.position.y += _0x49e829.userData.vy;
       _0x49e829.position.z += _0x49e829.userData.vz;
+
       for (let _0x48cf49 = 0x0; _0x48cf49 < _0x49e829.userData.tail.length - 0x1; _0x48cf49++) {
         const _0x5561f6 = _0x49e829.userData.tail[_0x48cf49];
         const _0x3f58a1 = _0x49e829.userData.tail[_0x48cf49 + 0x1];
@@ -258,16 +301,22 @@
         setTimeout(() => scene.remove(_0x14625f), 0x28);
       }
       _0x49e829.material.opacity = 0.8;
-      if (_0x49e829.position.z > 0x0 || _0x49e829.position.y < -0x28) {
+      
+      // Xóa sao băng nếu bay ra quá xa tầm nhìn hình cầu bao quanh
+      const distFromCenter = Math.sqrt(_0x49e829.position.x**2 + _0x49e829.position.y**2 + _0x49e829.position.z**2);
+      if (distFromCenter > 70 || _0x49e829.position.y < -30) {
         scene.remove(_0x49e829);
         shootingStars.splice(_0x135e8f, 0x1);
       }
     });
+
     if (Math.random() < 0.012) {
       spawnShootingStar();
     }
+    
     renderer.render(scene, camera);
   }
+
   createStars();
   createFallingTexts();
   loadHeartImage('./heart.png').then(_0x430c12 => {
@@ -275,6 +324,7 @@
     createFallingHearts(_0x7aa84d);
     animate();
   });
+
   window.addEventListener("resize", () => {
     const _0x25bfeb = window.innerWidth;
     const _0x43bec5 = window.innerHeight;
