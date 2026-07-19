@@ -7,8 +7,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
 
-  <!-- PLYR -->
-
   <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 
   <style>
@@ -19,14 +17,13 @@
 
 
 <script>
-const texts = ["Yu.meow","Yu.meo","Yu.ely"];
+const texts = ["Yu.meow","Yu.meo","Yu.ely"]; //You can change the name here to edit what will be displayed.
 const youtubeId = "VBO4xoFlNhI";
 </script>
 
 <div id="threejs-canvas"></div>
 
 
-<!-- NÚT BẬT/TẮT -->
     <style>
     #toggle-music {
       position: fixed;
@@ -76,9 +73,9 @@ const youtubeId = "VBO4xoFlNhI";
     <div id="plyr-player"
      data-plyr-provider="youtube"
      data-plyr-embed-id="VBO4xoFlNhI"
-     data-plyr-embed-url="https://www.youtube.com/embed/VBO4xoFlNhI?vq=small"></div>
+     data-plyr-embed-url="https://www.youtube.com/embed/VBO4xoFlNhI?vq=small"></div> 
 </div>
-
+  
 <script>
 let isPlaying = false;
 const btn = document.getElementById("toggle-music");
